@@ -1,1 +1,1 @@
-export const BASE_URL='https://notepad-backend-nr4g2xdnj-yashod-s-projects.vercel.app/'
+export const BASE_URL='https://notepad-backend-54t6atads-yashod-s-projects.vercel.app/'
