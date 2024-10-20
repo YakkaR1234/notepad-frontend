@@ -179,7 +179,7 @@ const updateIsPinned = async (noteData)=>{
              onPinNote={() => {updateIsPinned(item)}}
            />
 
-          ))};
+          ))}
            
           </div>
         ):(
