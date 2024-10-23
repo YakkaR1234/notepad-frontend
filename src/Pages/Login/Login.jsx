@@ -41,7 +41,7 @@ const Login = () => {
         ease: "power2.out",
       }
     );
-  }, []);
+  });
 
   const handleLogin = (id) => {
     navigate(`/dashboard/${id}`);
