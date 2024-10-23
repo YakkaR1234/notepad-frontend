@@ -3,7 +3,7 @@ import TagInput from "../../components/input/TagInput";
 import { MdAccessAlarm, MdClose, MdSentimentSatisfied } from "react-icons/md";
 import axiosInstance from "../../utils/axiosInstance";
 
-const AddEditNotes = ({ noteData,type,getAllNotes,onClose,showToastMessage }) => {
+const AddEditNotes = ({ noteData,type,getAllNotes,onClose,showToastMessage, userId }) => {
   
   const [title, setTitle] = useState(noteData?.title || "");
   const [content, setContent] = useState(noteData?.content || "");
@@ -15,11 +15,13 @@ const AddEditNotes = ({ noteData,type,getAllNotes,onClose,showToastMessage }) =>
 
     //add  note
     const addNewNote = async () => {
+      console.log(userId);
       try {
         const response = await axiosInstance.post("/add-note", {
           title,
           content,
           tags,
+          userId
         });
     
         if (response.data && response.data.note) {
@@ -45,6 +47,7 @@ const AddEditNotes = ({ noteData,type,getAllNotes,onClose,showToastMessage }) =>
         title,
         content,
         tags,
+        userId
       });
   
       if (response.data && response.data.note) {
@@ -53,10 +56,7 @@ const AddEditNotes = ({ noteData,type,getAllNotes,onClose,showToastMessage }) =>
         onClose();
       }
     } catch (error) {
-     if(error.response &&
-       error.response.data && 
-       error.response.data.message
-      ){
+     if(error.response && error.response.data && error.response.data.message){
         setError(error.response.data.message)
       }
     }
@@ -101,7 +101,7 @@ const AddEditNotes = ({ noteData,type,getAllNotes,onClose,showToastMessage }) =>
         <input
           type="text"
           className="input-box text-2xl text-slate-950 outline-none"
-          placeholder="Go to the gym"
+          placeholder="Add Title"
           value={title}
           onChange={({ target }) => setTitle(target.value)}
         />

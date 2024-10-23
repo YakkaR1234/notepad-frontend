@@ -12,7 +12,7 @@ const App = () => {
           {/* Default route redirects to /intro */}
           <Route path="/" element={<Navigate to="/intro" />} />
           <Route path="/intro" element={<Intro />} />
-          <Route path="/dashboard" element={<Home />} />
+          <Route path="/dashboard/:id" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
         </Routes>

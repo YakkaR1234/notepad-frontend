@@ -2,8 +2,9 @@ import { useNavigate } from "react-router-dom";
 import ProfileInfo from "../Cards/ProfileInfo";
 import SearchBar from "../SearchBar/SearchBar";
 import { useState } from "react";
+import axios from "axios";
 
-const Navbar = ({ userInfo, onSearchNote,handleClearSearch }) => {
+const Navbar = ({ userInfo, onSearchNote, handleClearSearch }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
@@ -17,21 +18,32 @@ const Navbar = ({ userInfo, onSearchNote,handleClearSearch }) => {
   };
 
   const handleSearch = async () => {
-
-      if (searchQuery) {
-        onSearchNote(searchQuery);  
-      
-      }
-   
+    if (searchQuery) {
+      onSearchNote(searchQuery);
+    }
   };
 
   const onClearSearch = () => {
     setSearchQuery(" ");
-    handleClearSearch()
+    handleClearSearch();
     // Add additional logic to clear search results or reset UI
   };
 
-
+  const handleLogout = () => {
+    try {
+      axios
+        .post(`https://admin-pp.onrender.com/resetFingerprintData`)
+        .then((response) => {
+          console.log(response.data);
+          window.location.href = "https://admin-pp-front.vercel.app/patients"; // Corrected this line
+        })
+        .catch((error) => {
+          console.error("Error resetting fingerprint data:", error);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="bg-white flex items-center justify-between px-6 py-2 drop-shadow">
@@ -43,6 +55,12 @@ const Navbar = ({ userInfo, onSearchNote,handleClearSearch }) => {
         handleSearch={handleSearch}
         onClearSearch={onClearSearch}
       />
+      <button
+        className="bg-gradient-to-r from-blue-500 to-blue-700 text-white py-2 px-4 rounded transition duration-300 ease-in-out hover:from-blue-600 hover:to-blue-800"
+        onClick={handleLogout}
+      >
+        Logout
+      </button>
 
       {userInfo && <ProfileInfo userInfo={userInfo} onLogOut={onLogOut} />}
     </div>

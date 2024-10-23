@@ -1,92 +1,66 @@
-import { Link, useNavigate } from 'react-router-dom';
-import Navbar from '../../components/Navbar/navbar';
-import PasswordInput from '../../components/input/PasswordInput';
-import { useState } from 'react';
-import { validateEmail } from '../../utils/helper';
-import axiosInstance from '../../utils/axiosInstance';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import fingerprintImage from '../../assets/fingerprint.jpg'; // Update the import path accordingly
+import gsap from 'gsap';
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
+  const navigate = useNavigate(); // Hook for navigation
+  const [userId, setUserId] = useState("");
 
-  const navigate=useNavigate()
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    if (!validateEmail(email)) {
-      setError("Please enter a valid email");
-      return;
-    }
-    if(!password){
-      setError("Please enter the password");
-      return;
-    }
-    setError("");
-
-    //login api call
-    try{
-      const response=await axiosInstance.post("/login",{
-        email:email,
-        password:password,
-
+  const handleGetFingerPrint = async () => {
+    try {
+      await axios.get('https://admin-pp.onrender.com/getFingerprintData').then((response) => {
+        console.log(response.data);
+        setUserId(response.data.data);
+      }).catch((error) => {
+        console.error("Error fetching fingerprint data:", error);
       });
-
-      if(response.data && response.data.accessToken){
-        localStorage.setItem("token",response.data.accessToken);
-        navigate("/dashboard");
-      }
-
-    }catch(error){
-      
-      if(error.response && error.response.data && error.response.data.message){
-        setError(error.response.data.message);
-      }else{
-        setError("An unexpected error occured.Please try again");
-      }
-
+    } catch (error) {
+      console.error("Error fetching fingerprint data:", error);
     }
-  }
+  };
+
+  useEffect(() => {
+    handleGetFingerPrint();
+    // Animation for fingerprint image
+    gsap.fromTo(
+      '.fingerprint-image',
+      { opacity: 0, scale: 0.8 }, // Start state
+      {
+        opacity: 1,
+        scale: 1, // End state
+        duration: 1.5,
+        ease: 'power2.out',
+      }
+    );
+  }, []);
+
+  const handleLogin = (id) => {
+    navigate(`/dashboard/${id}`);
+  };
 
   return (
-    <>
-      <Navbar />
-
-      <div className="flex items-center justify-center mt-28">
-        <div className="w-96 border rounded bg-white px-7 py-10">
-          <form onSubmit={handleLogin}>
-            <h4 className="text-2xl mb-7">Login</h4>
-
-            <input
-              type="text"
-              placeholder="Email"
-              className="input-box"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-
-            <PasswordInput
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-            />
-
-            {error && <p className='text-red-500 text-xs pb-1'>{error}</p>} 
-            
-            <button type="submit" className="btn-primary">
-              Login
-            </button>
-            
-            <p className="text-sm text-center mt-4">
-              Not registered yet?{' '}
-              <Link to="/signup" className="font-medium text-primary underline">
-                Create an Account
-              </Link>
-            </p>
-          </form>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-sm">
+        <h2 className="text-center text-2xl font-bold mb-4">Login</h2>
+        <div className="flex items-center justify-center mb-4">
+          {/* Fingerprint Image */}
+          <img 
+            src={fingerprintImage} 
+            alt="Fingerprint" 
+            className="w-24 h-24 fingerprint-image border-4 border-gray-300 rounded-full" 
+          />
         </div>
+        <button
+          onClick={() => handleLogin(userId)}
+          disabled={!userId}
+          className="bg-blue-500 text-white rounded-md py-2 w-full mt-6 hover:bg-blue-600 transition duration-200"
+        >
+          Log In
+        </button>
       </div>
-    </>
+    </div>
   );
 };
 
