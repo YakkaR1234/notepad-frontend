@@ -59,6 +59,8 @@ const Login = () => {
             className="w-24 h-24 fingerprint-image border-4 border-gray-300 rounded-full"
           />
         </div>
+        {userId==""?(<span>Please scan your finger</span>):(<></>)}
+        
         <button
           onClick={() => handleLogin(userId)}
           disabled={!userId}
