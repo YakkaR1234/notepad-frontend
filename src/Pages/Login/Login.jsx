@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
-import fingerprintImage from '../../assets/fingerprint.jpg'; // Update the import path accordingly
-import gsap from 'gsap';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
+import fingerprintImage from "../../assets/fingerprint.jpg"; // Update the import path accordingly
+import gsap from "gsap";
 
 const Login = () => {
   const navigate = useNavigate(); // Hook for navigation
@@ -10,12 +10,19 @@ const Login = () => {
 
   const handleGetFingerPrint = async () => {
     try {
-      await axios.get('https://admin-pp.onrender.com/getFingerprintData').then((response) => {
-        console.log(response.data);
-        setUserId(response.data.data);
-      }).catch((error) => {
-        console.error("Error fetching fingerprint data:", error);
-      });
+      await axios
+        .get("https://admin-pp.onrender.com/getFingerprintData")
+        .then((response) => {
+          console.log(response.data);
+          if (response.data.data === "0000") {
+            setUserId("");
+          } else {
+            setUserId(response.data.data);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching fingerprint data:", error);
+        });
     } catch (error) {
       console.error("Error fetching fingerprint data:", error);
     }
@@ -25,13 +32,13 @@ const Login = () => {
     handleGetFingerPrint();
     // Animation for fingerprint image
     gsap.fromTo(
-      '.fingerprint-image',
+      ".fingerprint-image",
       { opacity: 0, scale: 0.8 }, // Start state
       {
         opacity: 1,
         scale: 1, // End state
         duration: 1.5,
-        ease: 'power2.out',
+        ease: "power2.out",
       }
     );
   }, []);
@@ -46,10 +53,10 @@ const Login = () => {
         <h2 className="text-center text-2xl font-bold mb-4">Login</h2>
         <div className="flex items-center justify-center mb-4">
           {/* Fingerprint Image */}
-          <img 
-            src={fingerprintImage} 
-            alt="Fingerprint" 
-            className="w-24 h-24 fingerprint-image border-4 border-gray-300 rounded-full" 
+          <img
+            src={fingerprintImage}
+            alt="Fingerprint"
+            className="w-24 h-24 fingerprint-image border-4 border-gray-300 rounded-full"
           />
         </div>
         <button
