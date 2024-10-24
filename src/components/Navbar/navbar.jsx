@@ -46,7 +46,7 @@ const Navbar = ({ userInfo, onSearchNote, handleClearSearch }) => {
   };
 
   return (
-    <div className="bg-white flex items-center justify-between px-6 py-2 drop-shadow">
+    <div className="bg-white flex items-center justify-between px-6 py-2 drop-shadow note-cards">
       <h1 className="text-xl font-medium text-black py-2">Notes</h1>
 
       <SearchBar
@@ -55,12 +55,17 @@ const Navbar = ({ userInfo, onSearchNote, handleClearSearch }) => {
         handleSearch={handleSearch}
         onClearSearch={onClearSearch}
       />
-      <button
-        className="bg-gradient-to-r from-blue-500 to-blue-700 text-white py-2 px-4 rounded transition duration-300 ease-in-out hover:from-blue-600 hover:to-blue-800"
-        onClick={handleLogout}
-      >
-        Logout
-      </button>
+
+      {/* Wrap Print and Logout buttons together */}
+
+
+        <button
+          className="bg-gradient-to-r from-blue-500 to-blue-700 text-white py-2 px-4 rounded transition duration-300 ease-in-out hover:from-blue-600 hover:to-blue-800"
+          onClick={handleLogout}
+        >
+          Logout
+        </button>
+     
 
       {userInfo && <ProfileInfo userInfo={userInfo} onLogOut={onLogOut} />}
     </div>

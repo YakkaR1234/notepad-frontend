@@ -9,6 +9,7 @@ import axiosInstance from "../../utils/axiosInstance";
 import Toast from "../../components/ToastMessage/Toast";
 import EmptyCard from "../../components/EmptyCard/EmptyCard";
 import noteImg from "../../assets/add-note-svgrepo-com.svg";
+import "./Home.css"; // Make sure to import your CSS file
 
 const Home = () => {
   const [openAddEditModal, setOpenAddEditModal] = useState({
@@ -48,7 +49,7 @@ const Home = () => {
     setOpenAddEditModal({ isShown: true, type: "edit", data: noteDetails });
   };
 
-  //get all notes
+  // Get all notes
   const getAllNotes = async () => {
     try {
       const response = await axiosInstance.get("/get-all-notes/" + userId);
@@ -62,14 +63,14 @@ const Home = () => {
     }
   };
 
-  //delete a node
+  // Delete a note
   const deleteNode = async (data) => {
     const noteId = data._id;
     try {
       const response = await axiosInstance.delete("/delete-note/" + noteId);
 
       if (response.data && !response.data.error) {
-        showToastMessage("Note deleted Succesfully", "delete");
+        showToastMessage("Note deleted Successfully", "delete");
         getAllNotes();
       }
     } catch (error) {
@@ -86,7 +87,6 @@ const Home = () => {
   const onSearchNote = async (query) => {
     try {
       const response = await axiosInstance.get(`/search-notes/${userId}`, {
-        // Include userId in the endpoint
         params: { query }, // Pass the query parameter here
       });
 
@@ -110,8 +110,8 @@ const Home = () => {
 
     try {
       const response = await axiosInstance.put(
-        `/update-note-pinned/${noteId}`, // Endpoint for updating pinned status
-        { isPinned } // Send the toggled value to the backend
+        `/update-note-pinned/${noteId}`,
+        { isPinned }
       );
 
       if (response.data && response.data.note) {
@@ -145,10 +145,20 @@ const Home = () => {
         onSearchNote={onSearchNote}
         handleClearSearch={handleClearSearch}
       />
-      <div className="container mx-auto">
+      <button
+        onClick={() => {
+          console.log("Print button clicked");
+          window.print(); // Trigger print
+        }}
+        className="absolute right-10 top-20 px-4  py-2 bg-blue-500 text-white rounded z-[1000] note-cards"
+      >
+        Print Report
+      </button>
+
+      <div className="container mx-auto note-cards mt-[5%]">
         {allNotes.length > 0 ? (
           <div className="grid grid-cols-3 gap-4 mt-8">
-            {allNotes.map((item, index) => (
+            {allNotes.map((item) => (
               <NoteCard
                 key={item._id}
                 title={item.title}
@@ -169,6 +179,43 @@ const Home = () => {
         ) : (
           <EmptyCard imgSrc={noteImg} message="Add your notes here" />
         )}
+      </div>
+
+      <div>
+        {/* Table to display notes */}
+        <table className="w-full border-collapse border border-gray-400 printable-table">
+          <thead>
+            <tr>
+              <th className="border border-gray-300 px-4 py-2">Title</th>
+              <th className="border border-gray-300 px-4 py-2">Content</th>
+              <th className="border border-gray-300 px-4 py-2">Tags</th>
+            </tr>
+          </thead>
+          <tbody>
+            {/* Loop through allNotes and render each note */}
+            {allNotes.length > 0 ? (
+              allNotes.map((note) => (
+                <tr key={note._id}>
+                  <td className="border border-gray-300 px-4 py-2">
+                    {note.title}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    {note.content}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    {note.tags.join(", ")} {/* Join tags array into a string */}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="3" className="text-center py-4">
+                  No notes available
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
       <button

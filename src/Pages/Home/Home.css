@@ -1,0 +1,37 @@
+/* Hide the table by default */
+.printable-table {
+  display: none; /* Hide the table in normal view */
+}
+
+/* Print styles */
+@media print {
+  /* Show only the table */
+  
+  .note-cards {
+    display: none !important; /* Hide note cards in print view */
+  }
+
+  .printable-table {
+    display: table !important; /* Show the table */
+    width: 100%; /* Make sure it takes the full width */
+    border-collapse: collapse; /* Collapse borders for a cleaner look */
+  }
+
+  .printable-table th,
+  .printable-table td {
+    border: 1px solid black; /* Add borders for better visibility */
+    padding: 8px; /* Add some padding for better readability */
+  }
+
+  /* Optional: Add a background color to table headers */
+  .printable-table th {
+    background-color: #f0f0f0; /* Light gray background for headers */
+    font-weight: bold; /* Make headers bold */
+  }
+  
+  /* Optional: Center align text in table cells */
+  .printable-table th,
+  .printable-table td {
+    text-align: left; /* Align text to the left */
+  }
+}

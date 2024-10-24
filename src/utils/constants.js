@@ -1,1 +1,1 @@
-export const BASE_URL='https://notepad-backend-eight.vercel.app/'
+export const BASE_URL='http://localhost:9000'
